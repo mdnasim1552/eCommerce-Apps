@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="90dp">
         <ImageView
+            android:layout_margin="5dp"
             android:src="@drawable/shop_logo"
             android:id="@+id/cart_item_img"
             android:layout_gravity="center"
@@ -30,8 +31,9 @@
             <TextView
                 android:layout_marginTop="8dp"
                 android:id="@+id/cart_product_name"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:textSize="18sp"
                 android:textStyle="bold"
+                android:textColor="@android:color/black"
                 android:gravity="center"
                 android:text="Product Name"
                 android:layout_width="wrap_content"

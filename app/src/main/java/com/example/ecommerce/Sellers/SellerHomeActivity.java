@@ -37,6 +37,7 @@ import com.squareup.picasso.Picasso;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class SellerHomeActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
 
@@ -107,7 +108,17 @@ public class SellerHomeActivity extends AppCompatActivity implements BottomNavig
                     @Override
                     protected void onBindViewHolder(@NonNull SellerProductViewHolder holder, int position, @NonNull Products model)
                     {
-                        holder.txtProductName.setText(model.getPname());
+                        ArrayList<String> arrayList=CapitalizedEvery1stLetterOfEveryWord(model.getPname());
+                        String PnameString="";
+                        for (int i = 0; i < arrayList.size(); i++) {
+                            if(i!=(arrayList.size()-1)){
+                                PnameString=PnameString+arrayList.get(i)+" ";
+                            }else {
+                                PnameString=PnameString+arrayList.get(i);
+                            }
+                        }
+
+                        holder.txtProductName.setText(PnameString);
                         holder.txtProductDescription.setText(model.getDescription());
                         holder.txtProductPrice.setText("Price = " + formatter.format(Integer.valueOf(model.getPrice())) + " Tk");
                         holder.txtProductStatus.setText(model.getProductState());
@@ -181,5 +192,20 @@ public class SellerHomeActivity extends AppCompatActivity implements BottomNavig
             }
         });
 
+    }
+    private ArrayList<String> CapitalizedEvery1stLetterOfEveryWord(String pname) {
+        ArrayList<String> arr=new ArrayList<>();
+        arr.clear();
+        pname = pname.toLowerCase();
+        String[] string_array_ = pname.trim().split("\\s+");
+
+        for (int i = 0; i < string_array_.length; i++) {
+            String splited_word = string_array_[i];
+            char first_letter = Character.toUpperCase(splited_word.charAt(0));
+            StringBuffer buffer_splited_word = new StringBuffer(splited_word);
+            buffer_splited_word.setCharAt(0, first_letter);
+            arr.add(buffer_splited_word.toString());
+        }
+        return arr;
     }
 }

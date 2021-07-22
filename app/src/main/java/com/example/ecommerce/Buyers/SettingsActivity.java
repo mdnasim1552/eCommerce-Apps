@@ -267,29 +267,19 @@ public class SettingsActivity extends AppCompatActivity {
             {
                 if (dataSnapshot.exists())
                 {
+                    String name = dataSnapshot.child("name").getValue().toString();
+                    String phone = dataSnapshot.child("phoneOrder").getValue().toString();
+                    fullNameEditText.setText(name);
+                    userPhoneEditText.setText(phone);
                     if (dataSnapshot.child("image").exists())
                     {
                         String image = dataSnapshot.child("image").getValue().toString();
-                        String name = dataSnapshot.child("name").getValue().toString();
-                        String phone = dataSnapshot.child("phoneOrder").getValue().toString();
                         String address = dataSnapshot.child("address").getValue().toString();
-
                         Picasso.get().load(image).into(profileImageView);
-                        fullNameEditText.setText(name);
-                        userPhoneEditText.setText(phone);
                         addressEditText.setText(address);
                     }else if(dataSnapshot.child("address").exists()){
-                        String name = dataSnapshot.child("name").getValue().toString();
-                        String phone = dataSnapshot.child("phoneOrder").getValue().toString();
                         String address = dataSnapshot.child("address").getValue().toString();
-                        fullNameEditText.setText(name);
-                        userPhoneEditText.setText(phone);
                         addressEditText.setText(address);
-                    }else {
-                        String name = dataSnapshot.child("name").getValue().toString();
-                        String phone = dataSnapshot.child("phone").getValue().toString();
-                        fullNameEditText.setText(name);
-                        userPhoneEditText.setText(phone);
                     }
                 }
             }

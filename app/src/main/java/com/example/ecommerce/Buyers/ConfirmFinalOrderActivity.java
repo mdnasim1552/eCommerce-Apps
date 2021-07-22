@@ -15,8 +15,13 @@ import com.example.ecommerce.Prevalent.Prevalent;
 import com.example.ecommerce.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -47,10 +52,36 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity {
         addressEditText = (EditText) findViewById(R.id.shippment_address);
         cityEditText = (EditText) findViewById(R.id.shippment_city);
 
+        userInfoDisplay(nameEditText, phoneEditText, addressEditText);
+
         confirmOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Check();
+            }
+        });
+    }
+
+    private void userInfoDisplay(EditText nameEditText, EditText phoneEditText, EditText addressEditText) {
+        DatabaseReference UsersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(Prevalent.currentOnlineUser.getPhone());
+        UsersRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    String name = dataSnapshot.child("name").getValue().toString();
+                    String phone = dataSnapshot.child("phoneOrder").getValue().toString();
+                    nameEditText.setText(name);
+                    phoneEditText.setText(phone);
+                    if (dataSnapshot.child("address").exists()){
+                        String address = dataSnapshot.child("address").getValue().toString();
+                        addressEditText.setText(address);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
             }
         });
     }

@@ -119,7 +119,7 @@ public class AdminMaintainProductsActivity extends AppCompatActivity {
             productMap.put("pid", productID);
             productMap.put("description", pDescription);
             productMap.put("price", pPrice);
-            productMap.put("pname", pName);
+            productMap.put("pname", pName.toUpperCase());
 
             productsRef.updateChildren(productMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override

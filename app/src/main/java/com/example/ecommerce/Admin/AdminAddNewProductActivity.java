@@ -259,7 +259,7 @@ public class AdminAddNewProductActivity extends AppCompatActivity {
         productMap.put("image", downloadImageUrl);
         productMap.put("category", CategoryName);
         productMap.put("price", Price);
-        productMap.put("pname", Pname);
+        productMap.put("pname", Pname.toUpperCase());
 
 
         if(checkSeller.equals("yes")){

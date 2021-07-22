@@ -42,12 +42,39 @@ public class CartViewHolder extends ArrayAdapter<Cart> {
         TextView ProductQuantity = (TextView) convertView.findViewById(R.id.cart_product_quantity);
         ImageView ProductImage=convertView.findViewById(R.id.cart_item_img);
 
-        ProductName.setText(itemView.getPname());
+        ArrayList<String> arrayList=CapitalizedEvery1stLetterOfEveryWord(itemView.getPname());
+        String PnameString="";
+        for (int i = 0; i < arrayList.size(); i++) {
+            if(i!=(arrayList.size()-1)){
+                PnameString=PnameString+arrayList.get(i)+" ";
+            }else {
+                PnameString=PnameString+arrayList.get(i);
+            }
+        }
+
+        ProductName.setText(PnameString);
         ProductPrice.setText("Price " +formatter.format(Integer.valueOf(itemView.getPrice())) + " Tk");//formatter.format(Integer.valueOf(itemView.getPrice()))
         ProductQuantity.setText("Quantity = " + itemView.getQuantity());
         Picasso.get().load(itemView.getImage()).into(ProductImage);
         return convertView;
     }
+
+    private ArrayList<String> CapitalizedEvery1stLetterOfEveryWord(String pname) {
+        ArrayList<String> arr=new ArrayList<>();
+        arr.clear();
+        pname = pname.toLowerCase();
+        String[] string_array_ = pname.trim().split("\\s+");
+
+        for (int i = 0; i < string_array_.length; i++) {
+            String splited_word = string_array_[i];
+            char first_letter = Character.toUpperCase(splited_word.charAt(0));
+            StringBuffer buffer_splited_word = new StringBuffer(splited_word);
+            buffer_splited_word.setCharAt(0, first_letter);
+            arr.add(buffer_splited_word.toString());
+        }
+        return arr;
+    }
+
 }
 //private ItemClickListner itemClickListner;
 //txtProductName = itemView.findViewById(R.id.cart_product_name);

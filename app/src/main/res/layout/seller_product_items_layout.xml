@@ -14,6 +14,7 @@
         android:padding="10dp">
 
         <TextView
+            android:layout_marginBottom="2dp"
             android:id="@+id/seller_product_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,6 +27,7 @@
             android:maxLines="1"
             />
         <TextView
+            android:layout_marginBottom="2dp"
             android:id="@+id/seller_product_state"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -43,12 +45,11 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_below="@+id/seller_product_state"
-            android:scaleType="centerCrop"
-            android:layout_marginTop="5dp"
+            android:layout_marginBottom="2dp"
             />
 
         <TextView
-            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
             android:id="@+id/seller_product_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
