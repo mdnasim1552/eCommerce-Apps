@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_add_new_product_admin"
+            android:icon="@drawable/add"
+            android:title="Add New Product"/>
+
+        <item android:id="@+id/navigation_approve_new_product_admin"
+            android:title="Approve New Product"
+            android:icon="@drawable/approve_new_product"/>
+
+        <item android:id="@+id/navigation_maintain_product_admin"
+            android:title="Maintain Products"
+            android:icon="@drawable/maintain_products"/>
+
+        <item android:id="@+id/navigation_check_new_orders_admin"
+            android:title="Check New Orders"
+            android:icon="@drawable/check_new_orders"/>
+
+        <item android:id="@+id/navigation_see_all_the_invoice_admin"
+            android:title="See All The Invoice"
+            android:icon="@drawable/see_all_the_invoice"/>
+
+        <item android:id="@+id/navigation_wallet_admin"
+            android:title="Balance"
+            android:icon="@drawable/wallet_money"/>
+
+        <item android:id="@+id/navigation_deliverer_cashout_request"
+            android:title="Deliverer Cashout Request"
+            android:icon="@drawable/wallet_money"/>
+
+        <item android:id="@+id/navigation_seller_cashout_request"
+            android:title="Seller Cashout Request"
+            android:icon="@drawable/wallet_money"/>
+
+        <item
+            android:id="@+id/navigation_logout_admin"
+            android:icon="@drawable/logout"
+            android:title="Logout"/>
+
+    </group>
+</menu>

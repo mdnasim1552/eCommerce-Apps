@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="5dp"
+    app:cardPreventCornerOverlap="true"
+    android:background="@android:color/white"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_margin="20dp"
+        android:background="@color/purple_500">
+
+        <Button
+            android:textAllCaps="false"
+            android:text="Pick"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/while_button_design"
+            android:textColor="@android:color/black"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/pick_order_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:id="@+id/l_username_pNumber"
+            android:layout_marginTop="15dp"
+            android:layout_below="@+id/pick_order_switch"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_weight="1"
+                android:id="@+id/delivery_order_user_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="UserName"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:layout_weight="1"
+                android:id="@+id/delivery_order_phone_number"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Phone Number"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textAlignment="textEnd"
+                />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_marginTop="25dp"
+            android:id="@+id/delivery_order_total_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Total Price"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_below="@+id/l_username_pNumber"
+            />
+
+        <TextView
+            android:id="@+id/delivery_order_address_city"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Address, City"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_below="@+id/delivery_order_total_price"
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            />
+
+        <TextView
+            android:id="@+id/delivery_order_date_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Date Time"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_below="@+id/delivery_order_address_city"
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            />
+
+        <Button
+            android:id="@+id/delivery_show_all_products_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="29dp"
+            android:layout_marginBottom="10dp"
+            android:text="Show This Order Products"
+            android:textColor="@color/purple_500"
+            android:textSize="15sp"
+            android:textAllCaps="false"
+            android:background="@drawable/while_button_design"
+            android:layout_below="@+id/delivery_order_date_time"
+            />
+
+        <EditText
+            android:inputType="number"
+            android:maxLines="1"
+            android:id="@+id/delivery_users_security_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:hint="Please Enter the Security Code"
+            android:textColor="@color/purple_500"
+            android:textSize="18sp"
+            android:textAllCaps="false"
+            android:textAlignment="center"
+            android:padding="10dp"
+            android:background="@drawable/while_button_design"
+            android:layout_below="@+id/delivery_show_all_products_btn"
+            />
+        <Button
+            android:id="@+id/delivery_submit_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:text="Submit"
+            android:textColor="@color/purple_500"
+            android:textSize="15sp"
+            android:textAllCaps="false"
+            android:background="@drawable/while_button_design"
+            android:layout_below="@+id/delivery_users_security_code"
+            />
+
+        <Button
+            android:id="@+id/upload_invoice_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:text="Upload Invoice"
+            android:textColor="@color/purple_500"
+            android:textSize="15sp"
+            android:textAllCaps="false"
+            android:background="@drawable/while_button_design"
+            android:layout_below="@+id/delivery_submit_btn"
+            />
+
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

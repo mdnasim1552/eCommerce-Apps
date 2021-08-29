@@ -1,211 +1,206 @@
 package com.example.ecommerce.Sellers;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
-import com.example.ecommerce.Admin.AdminCategoryActivity;
+import com.example.ecommerce.Admin.AdminAddNewProductFragment;
 import com.example.ecommerce.Buyers.MainActivity;
-import com.example.ecommerce.Model.Products;
+import com.example.ecommerce.Model.CashOutRequest;
 import com.example.ecommerce.R;
-import com.example.ecommerce.ViewHolder.SellerProductViewHolder;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
+import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
-public class SellerHomeActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
+public class SellerHomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+    private Toolbar toolbar;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private ActionBarDrawerToggle toggle;
+    private TextView name,email;
 
-    private RecyclerView recyclerView;
-    RecyclerView.LayoutManager layoutManager;
-    private DatabaseReference ProductsRef;
-    private BottomNavigationView navView;
-    private DecimalFormat formatter;
-    private StorageReference photoRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seller_home);
 
-        navView = findViewById(R.id.nav_view);
-        navView.setOnNavigationItemSelectedListener(this);
 
-        ProductsRef = FirebaseDatabase.getInstance().getReference().child("Products");
-        formatter = new DecimalFormat("#,###");
-        recyclerView = findViewById(R.id.seller_home_recyclerView);
-        recyclerView.setHasFixedSize(true);
-        //layoutManager = new LinearLayoutManager(this);
-        //layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false);
-        layoutManager = new GridLayoutManager(this,2);
-        recyclerView.setLayoutManager(layoutManager);
+        toolbar = findViewById(R.id.toolbar_seller);
+        navigationView = findViewById(R.id.seller_side_navigation);
+        drawerLayout = findViewById(R.id.seller_drawer);
+
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Sellers Home");
+
+        toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open,R.string.close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View hView =  navigationView.getHeaderView(0);
+        name = hView.findViewById(R.id.name_of_the_sellers);
+        email = hView.findViewById(R.id.email_of_the_sellers);
+
+        FirebaseDatabase.getInstance().getReference().child("Sellers").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    name.setText(snapshot.child("name").getValue().toString());
+                    email.setText(snapshot.child("email").getValue().toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
+        loadFragments(new SellerHomeFragment());
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.add_product_menu_for_seller, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if(id==R.id.action_add_product){
+            getSupportActionBar().setTitle("Add Product");
+            loadFragments(new AdminAddNewProductFragment("seller"));
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
-        int id = item.getItemId();
-        switch (item.getItemId()){
-            case R.id.navigation_home:
-                return true;
-            case R.id.navigation_add:
-                Toast.makeText(this, "Clicked navigation_add", Toast.LENGTH_SHORT).show();
-                Intent intent_add=new Intent(SellerHomeActivity.this, AdminCategoryActivity.class);
-                intent_add.putExtra("seller","seller");
-                startActivity(intent_add);
-                return true;
-            case R.id.navigation_logout:
-                Toast.makeText(this, "Clicked navigation_notifications", Toast.LENGTH_SHORT).show();
+    public void onBackPressed() {
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
+        drawerLayout.closeDrawer(GravityCompat.START);
+        switch (item.getItemId()){
+            case R.id.navigation_home_seller:
+//                startActivity(getIntent());
+//                overridePendingTransition(0, 0);
+//                finish();
+                getSupportActionBar().setTitle("Sellers Home");
+                loadFragments(new SellerHomeFragment());
+                break;
+            case R.id.navigation_logout_seller:
                 final FirebaseAuth mAuth=FirebaseAuth.getInstance();
                 mAuth.signOut();
 
                 Intent intent_logout=new Intent(SellerHomeActivity.this, MainActivity.class);
                 intent_logout.addFlags(intent_logout.FLAG_ACTIVITY_NEW_TASK | intent_logout.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent_logout);
+                overridePendingTransition(0, 0);
                 finish();
-                return true;
-            default:
+                break;
+            case R.id.add_product_seller:
+                getSupportActionBar().setTitle("Add Product");
+                loadFragments(new AdminAddNewProductFragment("seller"));
+
+                //overridePendingTransition(0, 0);
+                break;
+            case R.id.wallet_seller:
+                getSupportActionBar().setTitle("Seller Balance");
+                loadFragments(new SellerBalanceFragment(FirebaseAuth.getInstance().getCurrentUser().getUid()));
+                break;
+            case R.id.cash_out_seller:
+                cashOutRequest();
                 break;
         }
-        return false;
+        return true;
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        FirebaseRecyclerOptions<Products> options =
-                new FirebaseRecyclerOptions.Builder<Products>()
-                        .setQuery(ProductsRef.orderByChild("sid").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid()), Products.class)
-                        .build();
-        FirebaseRecyclerAdapter<Products, SellerProductViewHolder> adapter =
-                new FirebaseRecyclerAdapter<Products, SellerProductViewHolder>(options) {
+    private void cashOutRequest() {
+        FirebaseDatabase.getInstance().getReference().child("Sellers").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    protected void onBindViewHolder(@NonNull SellerProductViewHolder holder, int position, @NonNull Products model)
-                    {
-                        ArrayList<String> arrayList=CapitalizedEvery1stLetterOfEveryWord(model.getPname());
-                        String PnameString="";
-                        for (int i = 0; i < arrayList.size(); i++) {
-                            if(i!=(arrayList.size()-1)){
-                                PnameString=PnameString+arrayList.get(i)+" ";
+                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                        if(snapshot.exists()){
+                            int balance=Integer.valueOf(snapshot.child("balance").getValue().toString());
+                            if(balance>=500){
+                                requestSuccess(String.valueOf(balance));
+                                FirebaseDatabase.getInstance().getReference().child("Sellers")
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("balance").setValue("0");
+
                             }else {
-                                PnameString=PnameString+arrayList.get(i);
+                                Toast.makeText(SellerHomeActivity.this, "Your money is less than 500", Toast.LENGTH_SHORT).show();
                             }
                         }
-
-                        holder.txtProductName.setText(PnameString);
-                        holder.txtProductDescription.setText(model.getDescription());
-                        holder.txtProductPrice.setText("Price = " + formatter.format(Integer.valueOf(model.getPrice())) + " Tk");
-                        holder.txtProductStatus.setText(model.getProductState());
-                        if(model.getProductState().equals("Approved")){
-                            holder.txtProductStatus.setTextColor(Color.parseColor("#1C8051"));
-                        }
-                        Picasso.get().load(model.getImage()).into(holder.imageView);
-
-                        holder.itemView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                CharSequence options[] = new CharSequence[]
-                                        {
-                                                "Yes",
-                                                "No"
-                                        };
-
-                                AlertDialog.Builder builder = new AlertDialog.Builder(SellerHomeActivity.this);
-                                builder.setTitle("Do you want to delete this products ?");
-                                builder.setCancelable(false);
-
-                                builder.setItems(options, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i)
-                                    {
-                                        if (i == 0)
-                                        {
-                                            String productID = model.getPid();
-                                            //RemoverOrder(uID);
-                                            deleteProduct(productID,model.getImage());
-                                        }
-                                        else
-                                        {
-                                            dialogInterface.cancel();
-                                            // finish();
-                                        }
-                                    }
-                                });
-                                builder.show();
-                            }
-                        });
                     }
 
-                    @NonNull
                     @Override
-                    public SellerProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
-                    {
-                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.seller_product_items_layout, parent, false);
-                        SellerProductViewHolder holder = new SellerProductViewHolder(view);
-                        return holder;
-                    }
-                };
-        recyclerView.setAdapter(adapter);
-        adapter.startListening();
+                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
-    }
-    private void deleteProduct(String productId, String productImgId)
-    {
-        photoRef= FirebaseStorage.getInstance().getReferenceFromUrl(productImgId);
-
-        ProductsRef.child(productId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task)
-            {
-                photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Toast.makeText(SellerHomeActivity.this, "The Product Is deleted successfully.", Toast.LENGTH_SHORT).show();
                     }
                 });
-            }
-        });
-
     }
-    private ArrayList<String> CapitalizedEvery1stLetterOfEveryWord(String pname) {
-        ArrayList<String> arr=new ArrayList<>();
-        arr.clear();
-        pname = pname.toLowerCase();
-        String[] string_array_ = pname.trim().split("\\s+");
 
-        for (int i = 0; i < string_array_.length; i++) {
-            String splited_word = string_array_[i];
-            char first_letter = Character.toUpperCase(splited_word.charAt(0));
-            StringBuffer buffer_splited_word = new StringBuffer(splited_word);
-            buffer_splited_word.setCharAt(0, first_letter);
-            arr.add(buffer_splited_word.toString());
-        }
-        return arr;
+    private void requestSuccess(String balance) {
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("CashOutRequestSeller");
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
+        String saveCurrentDate = currentDate.format(calendar.getTime());
+        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
+        String saveCurrentTime = currentTime.format(calendar.getTime());
+        String CurrentDateCurrentTime = saveCurrentDate +" "+ saveCurrentTime;
+
+        String key=databaseReference.push().getKey();
+        CashOutRequest obj=new CashOutRequest(CurrentDateCurrentTime,balance,FirebaseAuth.getInstance().getCurrentUser().getUid(),"",key);
+        databaseReference.child(key).setValue(obj);
+    }
+
+    public void loadFragments(Fragment fragment){
+        FragmentManager fragmentManager=getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.seller_universal_frameLayout,fragment);
+        fragmentTransaction.commit();
     }
 }

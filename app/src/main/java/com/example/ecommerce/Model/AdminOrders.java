@@ -1,12 +1,12 @@
 package com.example.ecommerce.Model;
 
 public class AdminOrders {
-    private String name, phone, address, city, state, date, time, totalAmount;
+    private String name, phone, address, city, state, date, time, totalAmount,delivered,uid,deliveryMansUserId,invoiceNumber,invoiceFileName,invoiceFileUrl;
 
     public AdminOrders() {
     }
 
-    public AdminOrders(String name, String phone, String address, String city, String state, String date, String time, String totalAmount) {
+    public AdminOrders(String name, String phone, String address, String city, String state, String date, String time, String totalAmount, String delivered, String uid, String deliveryMansUserId, String invoiceNumber, String invoiceFileName, String invoiceFileUrl) {
         this.name = name;
         this.phone = phone;
         this.address = address;
@@ -15,6 +15,12 @@ public class AdminOrders {
         this.date = date;
         this.time = time;
         this.totalAmount = totalAmount;
+        this.delivered = delivered;
+        this.uid = uid;
+        this.deliveryMansUserId = deliveryMansUserId;
+        this.invoiceNumber = invoiceNumber;
+        this.invoiceFileName = invoiceFileName;
+        this.invoiceFileUrl = invoiceFileUrl;
     }
 
     public String getName() {
@@ -79,5 +85,53 @@ public class AdminOrders {
 
     public void setTotalAmount(String totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public String getDelivered() {
+        return delivered;
+    }
+
+    public void setDelivered(String delivered) {
+        this.delivered = delivered;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getDeliveryMansUserId() {
+        return deliveryMansUserId;
+    }
+
+    public void setDeliveryMansUserId(String deliveryMansUserId) {
+        this.deliveryMansUserId = deliveryMansUserId;
+    }
+
+    public String getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
+
+    public String getInvoiceFileName() {
+        return invoiceFileName;
+    }
+
+    public void setInvoiceFileName(String invoiceFileName) {
+        this.invoiceFileName = invoiceFileName;
+    }
+
+    public String getInvoiceFileUrl() {
+        return invoiceFileUrl;
+    }
+
+    public void setInvoiceFileUrl(String invoiceFileUrl) {
+        this.invoiceFileUrl = invoiceFileUrl;
     }
 }

@@ -16,6 +16,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -65,12 +70,31 @@ public class SellerLoginActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull @NotNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
-                        loadingBar.dismiss();
-                        Toast.makeText(SellerLoginActivity.this, "You are logged in successfully.", Toast.LENGTH_SHORT).show();
-                        Intent intent=new Intent(SellerLoginActivity.this, SellerHomeActivity.class);
-                        intent.addFlags(intent.FLAG_ACTIVITY_NEW_TASK | intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        finish();
+
+                        final DatabaseReference deliverersRef = FirebaseDatabase.getInstance().getReference().child("Sellers");
+                        deliverersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull @NotNull DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).exists()){
+
+                                    loadingBar.dismiss();
+                                    Toast.makeText(SellerLoginActivity.this, "You are logged in successfully.", Toast.LENGTH_SHORT).show();
+                                    Intent intent=new Intent(SellerLoginActivity.this, SellerHomeActivity.class);
+                                    intent.addFlags(intent.FLAG_ACTIVITY_NEW_TASK | intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                    finish();
+
+                                }else {
+                                    loadingBar.dismiss();
+                                    Toast.makeText(SellerLoginActivity.this, "This account is not exist", Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                            }
+                        });
                     }else {
                         loadingBar.dismiss();
                         String errorMessage = task.getException().getMessage();

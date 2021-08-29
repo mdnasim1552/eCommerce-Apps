@@ -73,7 +73,7 @@ public class SellerRegistrationActivity extends AppCompatActivity {
 
         if(!name.equals("") && !phone.equals("") && !email.equals("") && !password.equals("") && !address.equals("")){
 
-            loadingBar.setTitle("Creatng Seller Account");
+            loadingBar.setTitle("Creating Seller Account");
             loadingBar.setMessage("Please wait, while we are checking the credentials.");
             loadingBar.setCanceledOnTouchOutside(false);
             loadingBar.show();
@@ -90,6 +90,8 @@ public class SellerRegistrationActivity extends AppCompatActivity {
                         sellerMap.put("email",email);
                         sellerMap.put("password",password);
                         sellerMap.put("address",address);
+                        sellerMap.put("balance","0");
+                        sellerMap.put("totalearning","0");
 
                         rootRef.child("Sellers").child(sid).updateChildren(sellerMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override

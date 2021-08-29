@@ -5,6 +5,16 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="Home"
+            android:iconTint="@android:color/white"/>
+        <item
+            android:id="@+id/nav_categories"
+            android:icon="@drawable/category"
+            android:title="Categories"
+            android:iconTint="@android:color/white"/>
+        <item
             android:id="@+id/nav_cart"
             android:icon="@drawable/nav_cart"
             android:title="Cart"
@@ -14,10 +24,11 @@
             android:icon="@drawable/ic_baseline_search_24"
             android:title="Search"
             android:iconTint="@android:color/white"/>
+
         <item
-            android:id="@+id/nav_categories"
-            android:icon="@drawable/category"
-            android:title="Categories"
+            android:id="@+id/nav_trackyourproduct"
+            android:icon="@drawable/trackyourproducticon"
+            android:title="Track your product"
             android:iconTint="@android:color/white"/>
         <item
             android:id="@+id/nav_settings"

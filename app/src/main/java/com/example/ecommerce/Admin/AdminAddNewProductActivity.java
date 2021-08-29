@@ -271,6 +271,7 @@ public class AdminAddNewProductActivity extends AppCompatActivity {
             productMap.put("productState", "Not Approved");
         }else {
             productMap.put("productState", "Approved");
+            productMap.put("sid","Admin");
         }
 
         ProductsRef.child(productRandomKey).updateChildren(productMap)
@@ -286,7 +287,7 @@ public class AdminAddNewProductActivity extends AppCompatActivity {
                                 startActivity(intent_logout);
                                 finish();
                             }else {
-                                Intent intent_admin = new Intent(AdminAddNewProductActivity.this, AdminCategoryActivity.class);
+                                Intent intent_admin = new Intent(AdminAddNewProductActivity.this, AdminHomeActivity.class);
                                 intent_admin.addFlags(intent_admin.FLAG_ACTIVITY_NEW_TASK | intent_admin.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent_admin);
                                 finish();

@@ -1,12 +1,14 @@
 package com.example.ecommerce.Buyers;
 
+import android.animation.ObjectAnimator;
+import android.animation.StateListAnimator;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,79 +17,60 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
-import com.example.ecommerce.Admin.AdminMaintainProductsActivity;
-import com.example.ecommerce.Model.Products;
 import com.example.ecommerce.Prevalent.Prevalent;
 import com.example.ecommerce.R;
-import com.example.ecommerce.ViewHolder.ProductViewHolder;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.paperdb.Paper;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
-
-    private DatabaseReference ProductsRef;
-    private RecyclerView recyclerView;
-    RecyclerView.LayoutManager layoutManager;
-    private String type = "";
-    private DecimalFormat formatter;
+    private Menu NotificationMenu;
+    private DrawerLayout drawer;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        if (bundle != null)
-        {
-            type = getIntent().getExtras().get("Admin").toString();
-        }
-
-
-        ProductsRef = FirebaseDatabase.getInstance().getReference().child("Products");
-        formatter = new DecimalFormat("#,###");
-
         Paper.init(this);
 
 
 
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Home");
         setSupportActionBar(toolbar);
+        //getSupportActionBar().setElevation(0);
+
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!type.equals("Admin"))
-                {
-                    Intent intent = new Intent(HomeActivity.this, CartActivity.class);
-                    startActivity(intent);
-                }
+                Intent intent = new Intent(HomeActivity.this, CartActivity.class);
+                startActivity(intent);
             }
         });
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -111,17 +94,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         View headerView = navigationView.getHeaderView(0);
         TextView userNameTextView = headerView.findViewById(R.id.user_profile_name);
         CircleImageView profileImageView = headerView.findViewById(R.id.user_profile_image);
-        if (!type.equals("Admin"))
-        {
-            userNameTextView.setText(Prevalent.currentOnlineUser.getName());
-            Picasso.get().load(Prevalent.currentOnlineUser.getImage()).placeholder(R.drawable.profile).into(profileImageView);
-        }
-        recyclerView = findViewById(R.id.recycler_menu);
-        recyclerView.setHasFixedSize(true);
-        //layoutManager = new LinearLayoutManager(this);
-        //layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false);
-        layoutManager = new GridLayoutManager(this,2);
-        recyclerView.setLayoutManager(layoutManager);
+        userNameTextView.setText(Prevalent.currentOnlineUser.getName());
+        Picasso.get().load(Prevalent.currentOnlineUser.getImage()).placeholder(R.drawable.profile).into(profileImageView);
+
+        loadFragments(new BuyersHomeFragment(""));
 
     }
 
@@ -129,84 +105,41 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onStart() {
         super.onStart();
 
-        FirebaseRecyclerOptions<Products> options =
-                new FirebaseRecyclerOptions.Builder<Products>()
-                        .setQuery(ProductsRef.orderByChild("productState").equalTo("Approved"), Products.class)
-                        .build();
-        FirebaseRecyclerAdapter<Products, ProductViewHolder> adapter =
-                new FirebaseRecyclerAdapter<Products, ProductViewHolder>(options) {
-                    @Override
-                    protected void onBindViewHolder(@NonNull ProductViewHolder holder, int position, @NonNull Products model)
-                    {
-                        ArrayList<String> arrayList=CapitalizedEvery1stLetterOfEveryWord(model.getPname());
-                        String PnameString="";
-                        for (int i = 0; i < arrayList.size(); i++) {
-                            if(i!=(arrayList.size()-1)){
-                                PnameString=PnameString+arrayList.get(i)+" ";
-                            }else {
-                                PnameString=PnameString+arrayList.get(i);
+        FirebaseDatabase.getInstance().getReference().child("Orders").child(Prevalent.currentOnlineUser.getPhone()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists())
+                {
+                    String securitycode=dataSnapshot.child("securitycode").getValue().toString();
+                    if(!securitycode.equals("")){
+                        if (NotificationMenu != null) {
+                            MenuItem item = NotificationMenu.findItem(R.id.action_notification);
+                            if (item != null) {
+                                item.setIcon(R.drawable.notifications_change_icon);
                             }
                         }
-
-                        holder.txtProductName.setText(PnameString);
-                        holder.txtProductDescription.setText(model.getDescription());
-                        holder.txtProductPrice.setText("Price = " + formatter.format(Integer.valueOf(model.getPrice())) + " Tk");
-                        Picasso.get().load(model.getImage()).into(holder.imageView);
-
-                        holder.itemView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                                if (type.equals("Admin"))
-                                {
-                                    Intent intent = new Intent(HomeActivity.this, AdminMaintainProductsActivity.class);
-                                    intent.putExtra("pid", model.getPid());
-                                    startActivity(intent);
-                                }
-                                else
-                                {
-                                    Intent intent = new Intent(HomeActivity.this, ProductDetailsActivity.class);
-                                    intent.putExtra("pid", model.getPid());
-                                    startActivity(intent);
-                                }
-                            }
-                        });
                     }
-
-                    @NonNull
-                    @Override
-                    public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
-                    {
-                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_items_layout, parent, false);
-                        ProductViewHolder holder = new ProductViewHolder(view);
-                        return holder;
+                }else{
+                    if (NotificationMenu != null) {
+                        MenuItem item = NotificationMenu.findItem(R.id.action_notification);
+                        if (item != null) {
+                            item.setIcon(R.drawable.notification_action_start);
+                        }
                     }
-                };
-        recyclerView.setAdapter(adapter);
-        adapter.startListening();
+                }
+            }
 
-    }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
-    private ArrayList<String> CapitalizedEvery1stLetterOfEveryWord(String pname) {
-        ArrayList<String> arr=new ArrayList<>();
-        arr.clear();
-        pname = pname.toLowerCase();
-        String[] string_array_ = pname.trim().split("\\s+");
+            }
+        });
 
-        for (int i = 0; i < string_array_.length; i++) {
-            String splited_word = string_array_[i];
-            char first_letter = Character.toUpperCase(splited_word.charAt(0));
-            StringBuffer buffer_splited_word = new StringBuffer(splited_word);
-            buffer_splited_word.setCharAt(0, first_letter);
-            arr.add(buffer_splited_word.toString());
-        }
-        return arr;
     }
 
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -217,6 +150,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        NotificationMenu=menu;
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
@@ -227,10 +161,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     {
         int id = item.getItemId();
 
-//        if (id == R.id.action_settings)
-//        {
-//            return true;
-//        }
+        if(id==R.id.action_notification){
+            item.getIcon().mutate().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
+            Intent intent = new Intent(HomeActivity.this, NotificationActivity.class);
+            startActivity(intent);
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -239,55 +174,57 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
         // Handle navigation view item clicks here.
+        drawer.closeDrawer(GravityCompat.START);
         int id = item.getItemId();
-
+        if(id==R.id.nav_home){
+            toolbar.setTitle("Home");
+            loadFragments(new BuyersHomeFragment(""));
+        }
         if (id == R.id.nav_cart)
         {
-            if (!type.equals("Admin"))
-            {
-                Intent intent = new Intent(HomeActivity.this, CartActivity.class);
-                startActivity(intent);
-            }
+            Intent intent = new Intent(HomeActivity.this, CartActivity.class);
+            startActivity(intent);
         }
         else if (id == R.id.nav_search)
         {
             Intent intent = new Intent(HomeActivity.this, SearchProductsActivity.class);
-            if (type.equals("Admin"))
-            {
-                intent.putExtra("Admin", "Admin");
-                startActivity(intent);
-            }else {
-                startActivity(intent);
-            }
+            startActivity(intent);
+        }
+        else if (id == R.id.nav_trackyourproduct)
+        {
+            Intent intent = new Intent(HomeActivity.this, TrackOrderedProductsActivity.class);
+            startActivity(intent);
         }
         else if (id == R.id.nav_categories)
         {
+            AppBarLayout appBarLayout=findViewById(R.id.appbar_buyers);
+            StateListAnimator stateListAnimator = new StateListAnimator();
+            stateListAnimator.addState(new int[0], ObjectAnimator.ofFloat(R.id.nav_categories, "elevation", 0));
+            appBarLayout.setStateListAnimator(stateListAnimator);
 
+            toolbar.setTitle("Categories");
+            loadFragments(new CategoryFragment("user"));
         }
         else if (id == R.id.nav_settings)
         {
-            if (!type.equals("Admin"))
-            {
-                Intent intent = new Intent(HomeActivity.this, SettingsActivity.class);
-                startActivity(intent);
-            }
+            Intent intent = new Intent(HomeActivity.this, SettingsActivity.class);
+            startActivity(intent);
         }
         else if (id == R.id.nav_logout)
         {
-            if (!type.equals("Admin"))
-            {
-                Paper.book().destroy();
-
-                Intent intent = new Intent(HomeActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
-            }
-
+            Paper.book().destroy();
+            Intent intent = new Intent(HomeActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
         }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    public void loadFragments(Fragment fragment){
+        FragmentManager fragmentManager=getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.buyers_universal_frameLayout,fragment);
+        fragmentTransaction.commit();
+    }
+
 }

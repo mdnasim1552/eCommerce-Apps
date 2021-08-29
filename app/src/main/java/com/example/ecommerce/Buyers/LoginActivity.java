@@ -13,7 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.ecommerce.Admin.AdminCategoryActivity;
+import com.example.ecommerce.Admin.AdminHomeActivity;
 import com.example.ecommerce.Model.Users;
 import com.example.ecommerce.Prevalent.Prevalent;
 import com.example.ecommerce.R;
@@ -79,7 +79,8 @@ public class LoginActivity extends AppCompatActivity {
                 NotAdminLink.setVisibility(View.VISIBLE);
                 parentDbName = "Admins";
                 chkBoxRememberMe.setChecked(false);
-                chkBoxRememberMe.setVisibility(View.INVISIBLE);
+                ForgetPasswordLink.setVisibility(View.INVISIBLE);
+                //chkBoxRememberMe.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -92,6 +93,7 @@ public class LoginActivity extends AppCompatActivity {
                 NotAdminLink.setVisibility(View.INVISIBLE);
                 chkBoxRememberMe.setVisibility(View.VISIBLE);
                 parentDbName = "Users";
+                ForgetPasswordLink.setVisibility(View.VISIBLE);
             }
         });
 
@@ -127,6 +129,7 @@ public class LoginActivity extends AppCompatActivity {
         {
             Paper.book().write(Prevalent.UserPhoneKey, phone);
             Paper.book().write(Prevalent.UserPasswordKey, password);
+            Paper.book().write(Prevalent.UserParentDbKey, parentDbName);
         }
 
         final DatabaseReference RootRef;
@@ -148,9 +151,11 @@ public class LoginActivity extends AppCompatActivity {
                             {
                                 Toast.makeText(LoginActivity.this, "Welcome Admin, you are logged in Successfully...", Toast.LENGTH_SHORT).show();
                                 loadingBar.dismiss();
-
-                                Intent intent = new Intent(LoginActivity.this, AdminCategoryActivity.class);
+                                Intent intent = new Intent(LoginActivity.this, AdminHomeActivity.class);
+                                Prevalent.currentOnlineUser = usersData;
+                                intent.addFlags(intent.FLAG_ACTIVITY_NEW_TASK | intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
+                                finish();
                             }
                             else if (parentDbName.equals("Users"))
                             {
@@ -159,7 +164,9 @@ public class LoginActivity extends AppCompatActivity {
 
                                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                                 Prevalent.currentOnlineUser = usersData;
+                                intent.addFlags(intent.FLAG_ACTIVITY_NEW_TASK | intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
+                                finish();
                             }
                         }
                         else

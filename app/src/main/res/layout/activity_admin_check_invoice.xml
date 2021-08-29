@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Admin.AdminCheckInvoiceActivity">
+
+
+    <RelativeLayout
+        android:id="@+id/r_invoice"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/purple_500"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+
+        <EditText
+            android:id="@+id/search_customers_invoice_edittext"
+            android:layout_width="340dp"
+            android:layout_height="wrap_content"
+            android:hint="Enter customer's user ID"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:background="@android:color/white"
+            android:padding="9dp"
+            android:layout_marginStart="17dp"
+            android:layout_centerVertical="true"
+            android:textColorHint="@color/purple_500"
+            android:inputType="text"
+            android:maxLines="1"
+            android:imeOptions="actionSearch"
+            />
+
+        <ImageButton
+            android:id="@+id/search_invoice_speaker_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/voice_icon"
+            android:textColor="@android:color/white"
+            android:padding="9dp"
+
+            android:layout_centerInParent="true"
+            android:background="@color/purple_500"
+            android:layout_toRightOf="@+id/search_customers_invoice_edittext"
+            />
+
+    </RelativeLayout>
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/search_invoice_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/r_invoice">
+    </androidx.recyclerview.widget.RecyclerView>
+
+</RelativeLayout>

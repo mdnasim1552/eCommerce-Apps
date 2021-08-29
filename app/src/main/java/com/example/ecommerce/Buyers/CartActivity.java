@@ -48,6 +48,8 @@ public class CartActivity extends AppCompatActivity {
     private DatabaseReference cartListRef;
 
     private RelativeLayout relativeLayout;
+    private ArrayList<String> productDetails = new ArrayList<String>();
+    private ArrayList<String> productSIDList = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,27 +73,33 @@ public class CartActivity extends AppCompatActivity {
         cartListRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                overTotalPrice = 0;
-                list.clear();
-                for (DataSnapshot ds: snapshot.getChildren()){
-                    cart=ds.getValue(Cart.class);
-                    list.add(cart);
-                    overTotalPrice=overTotalPrice+(Integer.valueOf(cart.getPrice()))*(Integer.valueOf(cart.getQuantity()));
-                }
-                DecimalFormat formatter = new DecimalFormat("#,###");
-                txtTotalAmount.setText("Total Price = Tk " + formatter.format(overTotalPrice));//formatter.format(overTotalPrice)
-
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Cart c = adapter.getItem(position);
-                        setAlertDialogForEachItem(c.getPid());
-                        adapter.notifyDataSetChanged();// notify the changed
-                        //Toast.makeText(CartActivity.this, "You clicked " + c.getPname() + "\n " + c.getPid(), Toast.LENGTH_SHORT).show();
+                if(snapshot.exists()){
+                    overTotalPrice = 0;
+                    list.clear();
+                    for (DataSnapshot ds: snapshot.getChildren()){
+                        cart=ds.getValue(Cart.class);
+                        list.add(cart);
+                        overTotalPrice=overTotalPrice+(Integer.valueOf(cart.getPrice()))*(Integer.valueOf(cart.getQuantity()));
+                        int individualProductPrice=(Integer.valueOf(cart.getPrice()))*(Integer.valueOf(cart.getQuantity()));
+                        String removeSpaceFromPname=cart.getPname().trim().replaceAll("\\s+","#");
+                        productDetails.add(removeSpaceFromPname+" "+cart.getPrice()+" "+cart.getQuantity()+" "+String.valueOf(individualProductPrice));
+                        productSIDList.add(cart.getSid()+" "+String.valueOf(individualProductPrice)+" "+removeSpaceFromPname);
                     }
-                });
-                listView.setAdapter(adapter);
-                //CheckOrderState();
+                    DecimalFormat formatter = new DecimalFormat("#,###");
+                    txtTotalAmount.setText("Total Price = Tk " + formatter.format(overTotalPrice));//formatter.format(overTotalPrice)
+
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Cart c = adapter.getItem(position);
+                            setAlertDialogForEachItem(c.getPid());
+                            adapter.notifyDataSetChanged();// notify the changed
+                            //Toast.makeText(CartActivity.this, "You clicked " + c.getPname() + "\n " + c.getPid(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    listView.setAdapter(adapter);
+                    //CheckOrderState();
+                }
             }
 
             @Override
@@ -110,6 +118,8 @@ public class CartActivity extends AppCompatActivity {
                     Toast.makeText(CartActivity.this, "please add product to your cart.", Toast.LENGTH_SHORT).show();
                 }else {
                     Intent intent = new Intent(CartActivity.this, ConfirmFinalOrderActivity.class);
+                    intent.putExtra("ArrayList",productDetails);
+                    intent.putExtra("ArrayListForSellers",productSIDList);
                     intent.putExtra("Total Price", String.valueOf(overTotalPrice));
                     startActivity(intent);
                 }
@@ -207,14 +217,14 @@ public class CartActivity extends AppCompatActivity {
                         NextProcessBtn.setVisibility(View.GONE);
 
                         Toast.makeText(CartActivity.this, "you can purchase more products, once you received your first final order.", Toast.LENGTH_SHORT).show();
-                    }
-                    else if(shippingState.equals("not shipped"))
+                    } else if(shippingState.equals("not shipped"))
                     {
                         txtTotalAmount.setText("Shipping State = Not Shipped");
                         relativeLayout.getLayoutParams().height = 140;
                         listView.setVisibility(View.GONE);
 
                         txtMsg1.setVisibility(View.VISIBLE);
+                        txtMsg1.setText("Congratulations, your final order has been placed successfully. Soon it will be verified.");
                         NextProcessBtn.setVisibility(View.GONE);
 
                         Toast.makeText(CartActivity.this, "you can purchase more products, once you received your first final order.", Toast.LENGTH_SHORT).show();

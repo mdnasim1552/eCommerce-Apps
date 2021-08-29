@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_home_deliverer"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="@string/title_home"/>
+
+        <item android:id="@+id/my_order"
+            android:title="My order"
+            android:icon="@drawable/order_list"/>
+
+        <item android:id="@+id/wallet"
+            android:title="Balance"
+            android:icon="@drawable/wallet_money"/>
+        <item
+            android:id="@+id/cash_out_deliverer"
+            android:icon="@drawable/cash_out"
+            android:title="Cash Out Request"
+            />
+
+        <item
+            android:id="@+id/navigation_logout_deliverer"
+            android:icon="@drawable/logout"
+            android:title="Logout"/>
+
+    </group>
+</menu>

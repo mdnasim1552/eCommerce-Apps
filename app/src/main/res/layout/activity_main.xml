@@ -65,9 +65,21 @@
         android:text="Wants to become a Seller?"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="19dp"
+        android:layout_above="@+id/delivery_begin"/>
+    <TextView
+        android:id="@+id/delivery_begin"
+        android:textColor="@color/purple_500"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:text="Wants to give delivery service?"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="19dp"
         android:layout_marginBottom="10dp"/>
+
 
 </RelativeLayout>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Delivery.DeliveryLoginActivity">
+
+    <ImageView
+        android:src="@drawable/delivererlogin"
+        android:id="@+id/img_deliverer_login"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"/>
+    <TextView
+        android:id="@+id/title_deliverer_login_form"
+        android:layout_marginTop="50dp"
+        android:layout_below="@+id/img_deliverer_login"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:textColor="@android:color/holo_blue_light"
+        android:gravity="center"
+        android:text="Deliverer Login Form"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <EditText
+        android:hint="Email..."
+        android:inputType="textEmailAddress"
+        android:textSize="16sp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:id="@+id/deliverer_login_email"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/title_deliverer_login_form"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <EditText
+        android:hint="Password..."
+        android:inputType="textPassword"
+        android:textSize="16sp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:id="@+id/deliverer_login_password"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/deliverer_login_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/deliverer_login_btn"
+        android:textSize="18sp"
+        android:textAllCaps="false"
+        android:text="Login"
+        android:textColor="@android:color/white"
+        android:background="@android:color/holo_blue_light"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_below="@+id/deliverer_login_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

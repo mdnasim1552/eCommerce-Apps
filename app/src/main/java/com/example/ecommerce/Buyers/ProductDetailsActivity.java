@@ -36,7 +36,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private ElegantNumberButton numberButton;
     private TextView productPrice, productDescription, productName;
 
-    private String productID = "", state = "Normal",image;
+    private String productID = "", state = "Normal",image,sellerID;
     int x;
     private DecimalFormat formatter;
 
@@ -108,6 +108,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     productDescription.setText(products.getDescription());
                     Picasso.get().load(products.getImage()).into(productImage);
                     image=products.getImage();
+                    sellerID=products.getSid();
                 }
             }
 
@@ -140,6 +141,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         cartMap.put("quantity", numberButton.getNumber());
         cartMap.put("discount", "");
         cartMap.put("image", image);
+        cartMap.put("sid",sellerID);
 
 
         cartListRef.child("User View").child(Prevalent.currentOnlineUser.getPhone())

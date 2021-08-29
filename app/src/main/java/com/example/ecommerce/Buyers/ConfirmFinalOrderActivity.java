@@ -6,15 +6,15 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.ecommerce.AllPaymentGateWay.SSLCommerzSandBoxActivity;
 import com.example.ecommerce.Prevalent.Prevalent;
 import com.example.ecommerce.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,9 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class ConfirmFinalOrderActivity extends AppCompatActivity {
 
@@ -35,24 +33,46 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity {
 
     private String totalAmount = "";
     private DecimalFormat formatter;
+    private Switch autoFillSwitch;
+    private ArrayList<String> productDetails ;
+    private ArrayList<String> productSIDList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_final_order);
 
-        totalAmount = getIntent().getStringExtra("Total Price");
+        Bundle bundle = getIntent().getExtras();
+
+        //totalAmount = getIntent().getStringExtra("Total Price");
+        totalAmount = bundle .getString("Total Price");
+        productDetails = (ArrayList<String>) bundle.getStringArrayList("ArrayList");
+        productSIDList = (ArrayList<String>) bundle.getStringArrayList("ArrayListForSellers");
+
+
         formatter = new DecimalFormat("#,###");
         Toast.makeText(this, "Total Price =  Tk " + formatter.format(Integer.valueOf(totalAmount)), Toast.LENGTH_SHORT).show();//formatter.format(totalAmount)
-
+       // Toast.makeText(this, productDetails.toString(), Toast.LENGTH_SHORT).show();
 
         confirmOrderBtn = (Button) findViewById(R.id.confirm_final_order_btn);
         nameEditText = (EditText) findViewById(R.id.shippment_name);
         phoneEditText = (EditText) findViewById(R.id.shippment_phone_number);
         addressEditText = (EditText) findViewById(R.id.shippment_address);
         cityEditText = (EditText) findViewById(R.id.shippment_city);
+        autoFillSwitch=findViewById(R.id.auto_fill_final_order_form_switch);
 
-        userInfoDisplay(nameEditText, phoneEditText, addressEditText);
+        autoFillSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(autoFillSwitch.isChecked()){
+                    userInfoDisplay(nameEditText, phoneEditText, addressEditText);
+                }else {
+                    nameEditText.setText("");
+                    phoneEditText.setText("");
+                    addressEditText.setText("");
+                }
+            }
+        });
 
         confirmOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,67 +127,25 @@ public class ConfirmFinalOrderActivity extends AppCompatActivity {
         }
         else
         {
-            ConfirmOrder();
+            Intent intent = new Intent(ConfirmFinalOrderActivity.this, SSLCommerzSandBoxActivity.class);
+            intent.putExtra("totalAmount",totalAmount);
+            intent.putExtra("name", nameEditText.getText().toString());
+            intent.putExtra("phone", phoneEditText.getText().toString());
+            intent.putExtra("address", addressEditText.getText().toString());
+            intent.putExtra("city", cityEditText.getText().toString());
+            intent.putExtra("ArrayList",productDetails);
+            intent.putExtra("ArrayListForSellers",productSIDList);
+            startActivity(intent);
+
+//            Intent intent = new Intent(ConfirmFinalOrderActivity.this, SSLCommerzSandBoxActivity.class);
+//            Bundle extras = new Bundle();
+//            extras.putString("totalAmount",totalAmount);
+//            extras.putString("name", nameEditText.getText().toString());
+//            extras.putString("phone", phoneEditText.getText().toString());
+//            extras.putString("address", addressEditText.getText().toString());
+//            extras.putString("city", cityEditText.getText().toString());
+//            intent.putExtras(extras);
+//            startActivity(intent);
         }
-    }
-
-
-
-    private void ConfirmOrder()
-    {
-        final String saveCurrentDate, saveCurrentTime,orderRandomKey;
-
-        Calendar calForDate = Calendar.getInstance();
-        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
-        saveCurrentDate = currentDate.format(calForDate.getTime());
-
-        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
-        saveCurrentTime = currentTime.format(calForDate.getTime());
-
-        //orderRandomKey = saveCurrentDate + saveCurrentTime;
-
-        final DatabaseReference ordersRef = FirebaseDatabase.getInstance().getReference()
-                .child("Orders")
-                .child(Prevalent.currentOnlineUser.getPhone());
-
-        HashMap<String, Object> ordersMap = new HashMap<>();
-        ordersMap.put("totalAmount", totalAmount);
-        ordersMap.put("name", nameEditText.getText().toString());
-        ordersMap.put("phone", phoneEditText.getText().toString());
-        ordersMap.put("address", addressEditText.getText().toString());
-        ordersMap.put("city", cityEditText.getText().toString());
-        ordersMap.put("date", saveCurrentDate);
-        ordersMap.put("time", saveCurrentTime);
-        ordersMap.put("state", "not shipped");
-
-        ordersRef.updateChildren(ordersMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task)
-            {
-                if (task.isSuccessful())
-                {
-                    FirebaseDatabase.getInstance().getReference()
-                            .child("Cart List")
-                            .child("User View")
-                            .child(Prevalent.currentOnlineUser.getPhone())
-                            .removeValue()
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task)
-                                {
-                                    if (task.isSuccessful())
-                                    {
-                                        Toast.makeText(ConfirmFinalOrderActivity.this, "your final order has been placed successfully.", Toast.LENGTH_SHORT).show();
-
-                                        Intent intent = new Intent(ConfirmFinalOrderActivity.this, HomeActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                }
-                            });
-                }
-            }
-        });
     }
 }

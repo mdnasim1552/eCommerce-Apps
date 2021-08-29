@@ -15,17 +15,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ECommerce"
         tools:replace="android:theme">
-        <activity android:name=".Admin.AdminCheckNewProductActivity"></activity>
+        <activity android:name=".Buyers.TrackOrderedProductsActivity"></activity>
+        <activity android:name=".Delivery.DeliveryMansProfileActivity" />
+        <activity android:name=".Admin.AdminHomeActivity" />
+        <activity android:name=".Admin.AdminViewPDFActivity" />
+        <activity android:name=".Admin.AdminCheckInvoiceActivity" />
+        <activity android:name=".AllPaymentGateWay.SSLCommerzSandBoxActivity" />
+        <activity android:name=".Delivery.DeliveryRegistrationActivity" />
+        <activity android:name=".Delivery.DeliveryLoginActivity" />
+        <activity android:name=".Delivery.DeliveryHomeActivity" />
+        <activity android:name=".Buyers.NotificationActivity" />
         <activity
             android:name=".Sellers.SellerHomeActivity"
-            android:label="@string/title_activity_seller_home"></activity>
+            android:label="@string/title_activity_seller_home" />
         <activity android:name=".Sellers.SellerLoginActivity" />
         <activity android:name=".Sellers.SellerRegistrationActivity" />
         <activity android:name=".Buyers.ResetPasswordActivity" />
         <activity android:name=".Admin.AdminMaintainProductsActivity" />
         <activity android:name=".Buyers.SearchProductsActivity" />
         <activity android:name=".Admin.AdminUserProductsActivity" />
-        <activity android:name=".Admin.AdminNewOrdersActivity" />
         <activity android:name=".Buyers.ConfirmFinalOrderActivity" />
         <activity android:name=".Buyers.CartActivity" />
         <activity android:name=".Buyers.ProductDetailsActivity" />
@@ -35,7 +43,6 @@
             android:label="@string/title_activity_home"
             android:theme="@style/Theme.ECommerce.NoActionBar" />
         <activity android:name=".Admin.AdminAddNewProductActivity" />
-        <activity android:name=".Admin.AdminCategoryActivity" />
         <activity android:name=".Buyers.RegisterActivity" />
         <activity android:name=".Buyers.LoginActivity" />
         <activity android:name=".Buyers.MainActivity">
