@@ -149,6 +149,11 @@ public class SellerHomeActivity extends AppCompatActivity implements NavigationV
                 getSupportActionBar().setTitle("Seller Balance");
                 loadFragments(new SellerBalanceFragment(FirebaseAuth.getInstance().getCurrentUser().getUid()));
                 break;
+            case R.id.confirm_order_seller:
+                Intent intent_confirm_order=new Intent(SellerHomeActivity.this,SellerConfirmationProductActivity.class);
+                intent_confirm_order.putExtra("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                startActivity(intent_confirm_order);
+                break;
             case R.id.cash_out_seller:
                 cashOutRequest();
                 break;

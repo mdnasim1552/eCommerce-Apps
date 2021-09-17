@@ -29,6 +29,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ecommerce.Delivery.DelivererUserProductsActivity;
 import com.example.ecommerce.Delivery.DeliveryMansProfileActivity;
 import com.example.ecommerce.Model.AdminOrders;
 import com.example.ecommerce.Model.Balance;
@@ -66,6 +67,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 import java.util.Random;
 
 import static android.app.Activity.RESULT_OK;
@@ -101,8 +103,6 @@ public class AdminNewOrdersFragment extends Fragment {
         pdfFileStorageRef = FirebaseStorage.getInstance().getReference().child("Customers all invoice pdf");
         pdfDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Invoices");
 
-        bmp = BitmapFactory.decodeResource(getResources(), R.drawable.invoice_header);
-        scaledbmp = Bitmap.createScaledBitmap(bmp, 1200, 580, false);
 
         ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
 
@@ -158,19 +158,83 @@ public class AdminNewOrdersFragment extends Fragment {
 
                 }
 
+                FirebaseDatabase.getInstance().getReference()
+                        .child("Cart List").child("Admin View").child(Objects.requireNonNull(getRef(holder.getAdapterPosition()).getKey())).child("Products")
+                        .addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                boolean x=true;
+                                for (DataSnapshot ds: snapshot.getChildren()){
+                                    if(ds.child("confirmationOfSellers").getValue().toString().equals("not confirm")){
+                                        x=false;
+                                        break;
+                                    }
+                                }
+                                if(!x){
+                                    holder.deliveredSignal.setTextColor(Color.parseColor("#FFCC0000"));
+                                }else{
+                                    if(!(model.getDelivered().equals("delivered") || model.getDelivered().equals("not delivered"))){
+                                        holder.deliveredSignal.setTextColor(Color.parseColor("#1C8051"));
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                            }
+                        });
+
                 if(model.getDelivered().equals("delivered")){
                     holder.deliveredSignal.setText("Delivered");
                     holder.deliveredSignal.setTextColor(Color.parseColor("#1C8051"));
-                }else {
+                }else if(model.getDelivered().equals("not delivered")){
                     holder.deliveredSignal.setText("Not Delivered");
                     holder.deliveredSignal.setTextColor(Color.parseColor("#FFCC0000"));
+                }else if(model.getDelivered().equals("not confirmed")){
+                    holder.deliveredSignal.setText("Confirmed order");
+                    //holder.deliveredSignal.setTextColor(Color.parseColor("#FFCC0000"));
+
+                    holder.deliveredSignal.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            FirebaseDatabase.getInstance().getReference()
+                                    .child("Cart List").child("Admin View").child(Objects.requireNonNull(getRef(holder.getAdapterPosition()).getKey())).child("Products")
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                            boolean x=true;
+                                            for (DataSnapshot ds: snapshot.getChildren()){
+                                                if(ds.child("confirmationOfSellers").getValue().toString().equals("not confirm")){
+                                                    x=false;
+                                                    break;
+                                                }
+                                            }
+                                            if(!x){
+                                                Toast.makeText(v.getContext(), "Some products are not confirmed", Toast.LENGTH_SHORT).show();
+                                            }else{
+                                                Toast.makeText(v.getContext(), "All products are confirmed", Toast.LENGTH_SHORT).show();
+                                                ordersRef.child(Objects.requireNonNull(getRef(holder.getAdapterPosition()).getKey()))
+                                                        .child("delivered").setValue("not delivered");
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                        }
+                                    });
+                        }
+                    });
+
                 }
 
                 holder.ShowOrdersBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         String uID = getRef(position).getKey();
-                        Intent intent = new Intent(v.getContext(), AdminUserProductsActivity.class);
+                        //Intent intent = new Intent(v.getContext(), AdminUserProductsActivity.class);
+                        Intent intent = new Intent(v.getContext(), DelivererUserProductsActivity.class);
                         intent.putExtra("uid", uID);
                         startActivity(intent);
                     }
@@ -197,26 +261,26 @@ public class AdminNewOrdersFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i)
                             {
-                                uID = getRef(position).getKey();
                                 invoiceNumber=model.getInvoiceNumber();
                                 if (i == 0)
                                 {
+                                    uID = getRef(holder.getAdapterPosition()).getKey();
                                     RemoverOrder(uID);
                                 }else if(i==1){
+                                    uID = getRef(position).getKey();
                                     ChangeOrderStatesSecurityCode(uID);
                                     ChangeOrderStateIntoNotShipped(uID);
-                                    ChangeOrderStateIntoNotDelivered(uID);
+                                    ChangeOrderStateIntoNotConfirmed(uID);
                                     ChangeDeliveryMansCurrentPick(model.getDeliveryMansUserId());
                                     ChangeOrderStateIntoAnyoneDeliveryMan(uID);
                                     ChangeFilenameFileurl(uID,model.getInvoiceFileUrl());
 
 
                                 }else if(i==2){
+                                    uID = getRef(position).getKey();
                                     GiveMoneyToSpecificSellersAndDeliverers(uID,model.getDeliveryMansUserId());
                                 }else if(i==3){
-                                    //generatePDF(model.getName(),model.getPhone(),model.getTotalAmount());
-                                    //ChooseInvoicePDF();
-
+                                    uID = getRef(position).getKey();
                                     ordersRef.child(uID).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -226,6 +290,8 @@ public class AdminNewOrdersFragment extends Fragment {
                                                 if(!filename.equals("") && !fileurl.equals("")){
                                                     Toast.makeText(v.getContext(), "Invoice pdf file already uploaded..!", Toast.LENGTH_SHORT).show();
                                                 }else {
+                                                    bmp = BitmapFactory.decodeResource(getResources(), R.drawable.invoice_header);
+                                                    scaledbmp = Bitmap.createScaledBitmap(bmp, 1200, 580, false);
                                                     generatePDF(model.getName(),model.getPhone(),model.getTotalAmount());
                                                     ChooseInvoicePDF();
                                                     Toast.makeText(v.getContext(), "Select "+invoiceNumber+".pdf file", Toast.LENGTH_LONG).show();
@@ -241,6 +307,7 @@ public class AdminNewOrdersFragment extends Fragment {
                                         }
                                     });
                                 }else if(i==4){
+                                    uID = getRef(position).getKey();
                                     ViewUploadPDF(uID);
                                 } else{
                                     dialogInterface.cancel();
@@ -586,8 +653,8 @@ public class AdminNewOrdersFragment extends Fragment {
         });
     }
 
-    private void ChangeOrderStateIntoNotDelivered(String uID) {
-        ordersRef.child(uID).child("delivered").setValue("not delivered").addOnCompleteListener(new OnCompleteListener<Void>() {
+    private void ChangeOrderStateIntoNotConfirmed(String uID) {
+        ordersRef.child(uID).child("delivered").setValue("not confirmed").addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<Void> task) {
                 if(task.isSuccessful()){
@@ -847,5 +914,6 @@ public class AdminNewOrdersFragment extends Fragment {
     private interface FirebaseCallbackForStoreSeller{
         void onCallbackForStoreSeller(ArrayList<String> list);
     }
+
 
 }

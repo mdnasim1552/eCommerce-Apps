@@ -1,12 +1,12 @@
 package com.example.ecommerce.Model;
 
 public class Cart {
-    private String pid, pname, price, quantity, discount,image,sid;
+    private String pid, pname, price, quantity, discount,image,sid,confirmationOfSellers,sellerPhone,sellerAddress,sellerName,usersPhoneNumber;
 
     public Cart() {
     }
 
-    public Cart(String pid, String pname, String price, String quantity, String discount, String image, String sid) {
+    public Cart(String pid, String pname, String price, String quantity, String discount, String image, String sid, String confirmationOfSellers, String sellerPhone, String sellerAddress, String sellerName, String usersPhoneNumber) {
         this.pid = pid;
         this.pname = pname;
         this.price = price;
@@ -14,6 +14,11 @@ public class Cart {
         this.discount = discount;
         this.image = image;
         this.sid = sid;
+        this.confirmationOfSellers = confirmationOfSellers;
+        this.sellerPhone = sellerPhone;
+        this.sellerAddress = sellerAddress;
+        this.sellerName = sellerName;
+        this.usersPhoneNumber = usersPhoneNumber;
     }
 
     public String getPid() {
@@ -70,5 +75,45 @@ public class Cart {
 
     public void setSid(String sid) {
         this.sid = sid;
+    }
+
+    public String getConfirmationOfSellers() {
+        return confirmationOfSellers;
+    }
+
+    public void setConfirmationOfSellers(String confirmationOfSellers) {
+        this.confirmationOfSellers = confirmationOfSellers;
+    }
+
+    public String getSellerPhone() {
+        return sellerPhone;
+    }
+
+    public void setSellerPhone(String sellerPhone) {
+        this.sellerPhone = sellerPhone;
+    }
+
+    public String getSellerAddress() {
+        return sellerAddress;
+    }
+
+    public void setSellerAddress(String sellerAddress) {
+        this.sellerAddress = sellerAddress;
+    }
+
+    public String getSellerName() {
+        return sellerName;
+    }
+
+    public void setSellerName(String sellerName) {
+        this.sellerName = sellerName;
+    }
+
+    public String getUsersPhoneNumber() {
+        return usersPhoneNumber;
+    }
+
+    public void setUsersPhoneNumber(String usersPhoneNumber) {
+        this.usersPhoneNumber = usersPhoneNumber;
     }
 }

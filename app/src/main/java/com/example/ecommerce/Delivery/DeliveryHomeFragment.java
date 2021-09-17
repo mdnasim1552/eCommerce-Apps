@@ -110,6 +110,7 @@ public class DeliveryHomeFragment extends Fragment {
                     public void onClick(View v) {
                         String uID = getRef(position).getKey();
                         Intent intent = new Intent(v.getContext(), AdminUserProductsActivity.class);
+                        //Intent intent = new Intent(v.getContext(), DelivererUserProductsActivity.class);
                         intent.putExtra("uid", uID);
                         startActivity(intent);
                     }

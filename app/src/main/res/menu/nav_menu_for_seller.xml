@@ -11,6 +11,10 @@
             android:title="Add Product"
             android:icon="@drawable/add"/>
 
+        <item android:id="@+id/confirm_order_seller"
+            android:title="Confirm Order"
+            android:icon="@drawable/order_confirmation"/>
+
         <item android:id="@+id/wallet_seller"
             android:title="Balance"
             android:icon="@drawable/wallet_money"/>

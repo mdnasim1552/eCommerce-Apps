@@ -5,6 +5,10 @@
             android:id="@+id/navigation_add_new_product_admin"
             android:icon="@drawable/add"
             android:title="Add New Product"/>
+        <item
+            android:id="@+id/navigation_confirm_users_ordered_product_admin"
+            android:icon="@drawable/order_confirmation"
+            android:title="Confirm Users Ordered Product"/>
 
         <item android:id="@+id/navigation_approve_new_product_admin"
             android:title="Approve New Product"
@@ -23,7 +27,11 @@
             android:icon="@drawable/see_all_the_invoice"/>
 
         <item android:id="@+id/navigation_wallet_admin"
-            android:title="Balance"
+            android:title="Balance by selling product"
+            android:icon="@drawable/wallet_money"/>
+
+        <item android:id="@+id/navigation_wallet_sellers_admin"
+            android:title="Income from Sellers"
             android:icon="@drawable/wallet_money"/>
 
         <item android:id="@+id/navigation_deliverer_cashout_request"

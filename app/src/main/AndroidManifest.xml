@@ -15,7 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ECommerce"
         tools:replace="android:theme">
-        <activity android:name=".Buyers.TrackOrderedProductsActivity"></activity>
+        <activity android:name=".Sellers.SellersProfileActivity"></activity>
+        <activity android:name=".Sellers.SellerConfirmationProductActivity" />
+        <activity android:name=".Delivery.DelivererUserProductsActivity" />
+        <activity android:name=".Buyers.TrackOrderedProductsActivity" />
         <activity android:name=".Delivery.DeliveryMansProfileActivity" />
         <activity android:name=".Admin.AdminHomeActivity" />
         <activity android:name=".Admin.AdminViewPDFActivity" />

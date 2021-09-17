@@ -162,7 +162,7 @@ public class SSLCommerzSandBoxActivity extends AppCompatActivity implements SSLC
         ordersMap.put("date", saveCurrentDate);
         ordersMap.put("time", saveCurrentTime);
         ordersMap.put("state", "not shipped");
-        ordersMap.put("delivered", "not delivered");
+        ordersMap.put("delivered", "not confirmed");
         ordersMap.put("uid", Prevalent.currentOnlineUser.getPhone());
         ordersMap.put("deliveryMansUserId", "anyone");
         ordersMap.put("securitycode", String.valueOf(securityCode));

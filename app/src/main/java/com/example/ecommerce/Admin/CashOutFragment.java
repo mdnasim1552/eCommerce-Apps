@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ecommerce.Delivery.DeliveryMansProfileActivity;
 import com.example.ecommerce.Model.CashOutRequest;
 import com.example.ecommerce.R;
+import com.example.ecommerce.Sellers.SellersProfileActivity;
 import com.example.ecommerce.ViewHolder.CashOutViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -79,7 +80,9 @@ public class CashOutFragment extends Fragment {
                             intent.putExtra("DeliveryMansUserId",model.getSid());
                             startActivity(intent);
                         }else if(type.equals("Seller")){
-                            Toast.makeText(v.getContext(), "Commimg soon", Toast.LENGTH_SHORT).show();
+                            Intent intent=new Intent(v.getContext(), SellersProfileActivity.class);
+                            intent.putExtra("SellersUserId",model.getSid());
+                            startActivity(intent);
                         }
                     }
                 });

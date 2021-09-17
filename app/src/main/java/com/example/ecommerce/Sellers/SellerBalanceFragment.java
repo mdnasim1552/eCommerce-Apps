@@ -31,7 +31,7 @@ import java.text.DecimalFormat;
 
 public class SellerBalanceFragment extends Fragment {
     private RecyclerView recyclerView;
-    private TextView currentBalancetxtView;
+    private TextView currentBalancetxtView,totalEarningtxtView;
     private DecimalFormat formatter;
     private String identity;
 
@@ -48,6 +48,8 @@ public class SellerBalanceFragment extends Fragment {
 
         formatter = new DecimalFormat("#,###");
         currentBalancetxtView=v.findViewById(R.id.current_balance);
+        totalEarningtxtView=v.findViewById(R.id.total_earning);
+
         if(!identity.equals("Admin")){
             FirebaseDatabase.getInstance().getReference().child("Sellers")
                     .child(identity)
@@ -55,7 +57,8 @@ public class SellerBalanceFragment extends Fragment {
                         @Override
                         public void onDataChange(@NonNull @NotNull DataSnapshot dataSnapshot) {
                             if(dataSnapshot.exists()){
-                                currentBalancetxtView.setText("Current Balance : "+formatter.format(Integer.valueOf(dataSnapshot.child("balance").getValue().toString()))+" Tk");
+                                currentBalancetxtView.setText("Current Balance by selling product : "+formatter.format(Integer.valueOf(dataSnapshot.child("balance").getValue().toString()))+" Tk");
+                                totalEarningtxtView.setText("Total Earning by selling product : "+formatter.format(Integer.valueOf(dataSnapshot.child("totalearning").getValue().toString()))+" Tk");
                             }
                         }
 
@@ -71,7 +74,9 @@ public class SellerBalanceFragment extends Fragment {
                         @Override
                         public void onDataChange(@NonNull @NotNull DataSnapshot dataSnapshot) {
                             if(dataSnapshot.exists()){
-                                currentBalancetxtView.setText("Current Balance : "+formatter.format(Integer.valueOf(dataSnapshot.child("balance").getValue().toString()))+" Tk");
+                                currentBalancetxtView.setText("Current Balance by selling product : "+formatter.format(Integer.valueOf(dataSnapshot.child("balance").getValue().toString()))+" Tk");
+                                totalEarningtxtView.setText("Total Earning by selling product : "+formatter.format(Integer.valueOf(dataSnapshot.child("totalearning").getValue().toString()))+" Tk");
+
                             }
                         }
 

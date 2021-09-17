@@ -30,7 +30,7 @@ import java.text.DecimalFormat;
 
 public class DelivererBalanceFragment extends Fragment {
     private RecyclerView recyclerView;
-    private TextView currentBalancetxtView;
+    private TextView currentBalancetxtView, totalEarningtxtView;
     private DecimalFormat formatter;
 
     public DelivererBalanceFragment() {
@@ -45,6 +45,7 @@ public class DelivererBalanceFragment extends Fragment {
         View v=inflater.inflate(R.layout.fragment_deliverer_balance, container, false);
         formatter = new DecimalFormat("#,###");
         currentBalancetxtView=v.findViewById(R.id.current_balance_deliverer);
+        totalEarningtxtView=v.findViewById(R.id.total_earning_deliverer);
         FirebaseDatabase.getInstance().getReference().child("Deliverers")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addValueEventListener(new ValueEventListener() {
@@ -52,6 +53,7 @@ public class DelivererBalanceFragment extends Fragment {
                     public void onDataChange(@NonNull @NotNull DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()){
                             currentBalancetxtView.setText("Current Balance : "+formatter.format(Integer.valueOf(dataSnapshot.child("balance").getValue().toString()))+" Tk");
+                            totalEarningtxtView.setText("Total Earning : "+formatter.format(Integer.valueOf(dataSnapshot.child("totalearning").getValue().toString()))+" Tk");
                         }
                     }
 

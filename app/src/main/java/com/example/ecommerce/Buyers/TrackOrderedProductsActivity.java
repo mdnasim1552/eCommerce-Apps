@@ -74,20 +74,23 @@ public class TrackOrderedProductsActivity extends AppCompatActivity {
                     orderInvoiceNumber.setText("#"+snapshot.child("invoiceNumber").getValue().toString());
                     orderInvoiceNumber.setAlpha((float)1);
                     orderEstimateTime.setAlpha((float)1);
-                    orderEstimateTime.setText("72 Hours        ");
+                    orderEstimateTime.setText("72 Hours");
                     getOrderStatus("0");
-                    if(snapshot.child("state").getValue().toString().equals("shipped")){
+                    if(snapshot.child("delivered").getValue().toString().equals("not delivered")){
                         getOrderStatus("1");
-                        orderEstimateTime.setText("48 Hours        ");
+                        orderEstimateTime.setText("48 Hours");
+                    }
+                    if(snapshot.child("state").getValue().toString().equals("shipped")){
+                        getOrderStatus("2");
+                        orderEstimateTime.setText("24 Hours");
                     }
                     if(!snapshot.child("invoiceFileName").getValue().toString().equals("") && !snapshot.child("invoiceFileUrl").getValue().toString().equals("")){
-                        getOrderStatus("2");
-                        orderEstimateTime.setText("2 Hours         ");
+                        getOrderStatus("3");
+                        orderEstimateTime.setText("12 Hours");
                     }
                     if(snapshot.child("delivered").getValue().toString().equals("delivered")){
-                        getOrderStatus("3");
                         orderEstimateTime.setAlpha((float)0.5);
-                        orderEstimateTime.setText("0 Hour         ");
+                        orderEstimateTime.setText("0 Hour");
                         getOrderStatus("4");
                     }
                 }

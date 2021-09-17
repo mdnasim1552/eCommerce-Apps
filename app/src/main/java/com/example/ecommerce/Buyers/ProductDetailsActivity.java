@@ -36,7 +36,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private ElegantNumberButton numberButton;
     private TextView productPrice, productDescription, productName;
 
-    private String productID = "", state = "Normal",image,sellerID;
+    private String productID = "", state = "Normal",image,sellerID,sellerPhone,sellerAddress,sellerName;
     int x;
     private DecimalFormat formatter;
 
@@ -109,6 +109,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     Picasso.get().load(products.getImage()).into(productImage);
                     image=products.getImage();
                     sellerID=products.getSid();
+                    sellerPhone=products.getSellerPhone();
+                    sellerAddress=products.getSellerAddress();
+                    sellerName=products.getSellerName();
                 }
             }
 
@@ -142,6 +145,12 @@ public class ProductDetailsActivity extends AppCompatActivity {
         cartMap.put("discount", "");
         cartMap.put("image", image);
         cartMap.put("sid",sellerID);
+        cartMap.put("confirmationOfSellers", "not confirm");
+        cartMap.put("sellerPhone", sellerPhone);
+        cartMap.put("sellerAddress", sellerAddress);
+        cartMap.put("sellerName", sellerName);
+        cartMap.put("usersPhoneNumber", Prevalent.currentOnlineUser.getPhone());
+        //seller's phone & address should add
 
 
         cartListRef.child("User View").child(Prevalent.currentOnlineUser.getPhone())

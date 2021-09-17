@@ -3,6 +3,7 @@ package com.example.ecommerce.Delivery;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -22,13 +23,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommerce.Admin.AdminUserProductsActivity;
 import com.example.ecommerce.Admin.AdminViewPDFActivity;
 import com.example.ecommerce.Model.AdminOrders;
 import com.example.ecommerce.Model.Balance;
@@ -186,30 +187,54 @@ public class DeliveryMyPickedOrderFragment extends Fragment {
                     public void onClick(View v) {
                         uID = getRef(position).getKey();
 
-                        ordersRef.child(uID).addListenerForSingleValueEvent(new ValueEventListener() {
+                        CharSequence options[] = new CharSequence[]
+                                {
+                                        "See invoice",
+                                        "See picked product address",
+                                        "Nothing"
+                                };
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                        builder.setTitle("Do you want to see invoice/picked product address ?");
+
+                        builder.setItems(options, new DialogInterface.OnClickListener() {
                             @Override
-                            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                                if(snapshot.exists()){
-                                    String filename=snapshot.child("invoiceFileName").getValue().toString();
-                                    String fileurl=snapshot.child("invoiceFileUrl").getValue().toString();
-                                    if(!filename.equals("") && !fileurl.equals("")){
-                                        Intent intent=new Intent(v.getContext(), AdminViewPDFActivity.class);
-                                        intent.putExtra("filename",filename);
-                                        intent.putExtra("fileurl",fileurl);
-                                        startActivity(intent);
-                                    }else {
-                                        Toast.makeText(v.getContext(), "First upload invoice pdf file", Toast.LENGTH_SHORT).show();
-                                    }
-                                }else{
-                                    Toast.makeText(v.getContext(), "Error", Toast.LENGTH_SHORT).show();
+                            public void onClick(DialogInterface dialogInterface, int i)
+                            {
+                                if (i == 0) {
+                                    ordersRef.child(uID).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                            if(snapshot.exists()){
+                                                String filename=snapshot.child("invoiceFileName").getValue().toString();
+                                                String fileurl=snapshot.child("invoiceFileUrl").getValue().toString();
+                                                if(!filename.equals("") && !fileurl.equals("")){
+                                                    Intent intent=new Intent(v.getContext(), AdminViewPDFActivity.class);
+                                                    intent.putExtra("filename",filename);
+                                                    intent.putExtra("fileurl",fileurl);
+                                                    startActivity(intent);
+                                                }else {
+                                                    Toast.makeText(v.getContext(), "First upload invoice pdf file", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }else{
+                                                Toast.makeText(v.getContext(), "Error", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                        }
+                                    });
+                                } else if(i==1){
+                                    Toast.makeText(v.getContext(), "Picked Products address", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    dialogInterface.cancel();
+                                    // finish();
                                 }
                             }
-
-                            @Override
-                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                            }
                         });
+                        builder.show();
                     }
                 });
 
@@ -218,7 +243,8 @@ public class DeliveryMyPickedOrderFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         uID = getRef(position).getKey();
-                        Intent intent = new Intent(v.getContext(), AdminUserProductsActivity.class);
+                        //Intent intent = new Intent(v.getContext(), AdminUserProductsActivity.class);
+                        Intent intent = new Intent(v.getContext(), DelivererUserProductsActivity.class);
                         intent.putExtra("uid", uID);
                         startActivity(intent);
                     }

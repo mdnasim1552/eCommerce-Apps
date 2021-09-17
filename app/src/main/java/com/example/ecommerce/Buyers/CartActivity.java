@@ -82,7 +82,7 @@ public class CartActivity extends AppCompatActivity {
                         overTotalPrice=overTotalPrice+(Integer.valueOf(cart.getPrice()))*(Integer.valueOf(cart.getQuantity()));
                         int individualProductPrice=(Integer.valueOf(cart.getPrice()))*(Integer.valueOf(cart.getQuantity()));
                         String removeSpaceFromPname=cart.getPname().trim().replaceAll("\\s+","#");
-                        productDetails.add(removeSpaceFromPname+" "+cart.getPrice()+" "+cart.getQuantity()+" "+String.valueOf(individualProductPrice));
+                        productDetails.add(removeSpaceFromPname+" "+cart.getPrice()+" "+cart.getQuantity()+" "+String.valueOf(individualProductPrice)+" "+cart.getSid());
                         productSIDList.add(cart.getSid()+" "+String.valueOf(individualProductPrice)+" "+removeSpaceFromPname);
                     }
                     DecimalFormat formatter = new DecimalFormat("#,###");

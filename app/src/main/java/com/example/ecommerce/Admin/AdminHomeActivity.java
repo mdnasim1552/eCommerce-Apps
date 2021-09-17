@@ -26,6 +26,7 @@ import com.example.ecommerce.Buyers.MainActivity;
 import com.example.ecommerce.Prevalent.Prevalent;
 import com.example.ecommerce.R;
 import com.example.ecommerce.Sellers.SellerBalanceFragment;
+import com.example.ecommerce.Sellers.SellerConfirmationProductActivity;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
 
@@ -115,6 +116,12 @@ public class AdminHomeActivity extends AppCompatActivity implements NavigationVi
                 getSupportActionBar().setTitle("Balance");
                 loadFragments(new SellerBalanceFragment("Admin"));
                 break;
+            case R.id.navigation_wallet_sellers_admin:
+                //Intent intent_wallet_sellers_admin=new Intent(AdminHomeActivity.this,AdminIncomeFromSellersSellActivity.class);
+               // startActivity(intent_wallet_sellers_admin);
+                getSupportActionBar().setTitle("Income from Sellers");
+                loadFragments(new AdminIncomeFromSellersSellFragment());
+                break;
             case R.id.navigation_deliverer_cashout_request:
                 //Intent intent_deliverer_cashout=new Intent(AdminHomeActivity.this,CashOutActivity.class);
                // startActivity(intent_deliverer_cashout);
@@ -125,6 +132,11 @@ public class AdminHomeActivity extends AppCompatActivity implements NavigationVi
             case R.id.navigation_seller_cashout_request:
                 getSupportActionBar().setTitle("Seller Cashout Requests");
                 loadFragments(new CashOutFragment("CashOutRequestSeller","Seller"));
+                break;
+            case R.id.navigation_confirm_users_ordered_product_admin:
+                Intent intent_confirm_user_order_product=new Intent(AdminHomeActivity.this, SellerConfirmationProductActivity.class);
+                intent_confirm_user_order_product.putExtra("uid", "Admin");
+                startActivity(intent_confirm_user_order_product);
                 break;
             case R.id.navigation_logout_admin:
                 Paper.book().destroy();
